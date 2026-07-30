@@ -1,0 +1,281 @@
+-- Tạo GUI Menu chính (màu đen trắng)
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+screenGui.ResetOnSpawn = false
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 450, 0, 380)
+frame.Position = UDim2.new(0.5, -225, 0.5, -190)
+frame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+frame.BorderSizePixel = 3
+frame.BorderColor3 = Color3.fromRGB(200, 200, 200)
+frame.Active = true
+frame.Draggable = true
+frame.Parent = screenGui
+
+-- Nút thu nhỏ (-)
+local minimizeBtn = Instance.new("TextButton")
+minimizeBtn.Size = UDim2.new(0, 30, 0, 25)
+minimizeBtn.Position = UDim2.new(1, -65, 0, 5)
+minimizeBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+minimizeBtn.BorderSizePixel = 2
+minimizeBtn.BorderColor3 = Color3.fromRGB(200, 200, 200)
+minimizeBtn.Text = "-"
+minimizeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+minimizeBtn.TextSize = 20
+minimizeBtn.Font = Enum.Font.GothamBold
+minimizeBtn.Parent = frame
+
+-- Nút đóng (X)
+local closeBtn = Instance.new("TextButton")
+closeBtn.Size = UDim2.new(0, 30, 0, 25)
+closeBtn.Position = UDim2.new(1, -32, 0, 5)
+closeBtn.BackgroundColor3 = Color3.fromRGB(80, 0, 0)
+closeBtn.BorderSizePixel = 2
+closeBtn.BorderColor3 = Color3.fromRGB(200, 200, 200)
+closeBtn.Text = "X"
+closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeBtn.TextSize = 16
+closeBtn.Font = Enum.Font.GothamBold
+closeBtn.Parent = frame
+
+-- Dòng SELECT MODE
+local selectMode = Instance.new("TextLabel")
+selectMode.Size = UDim2.new(1, 0, 0, 45)
+selectMode.Position = UDim2.new(0, 0, 0, 15)
+selectMode.BackgroundTransparency = 1
+selectMode.Text = ">> SELECT MODE"
+selectMode.TextColor3 = Color3.fromRGB(220, 220, 220)
+selectMode.TextScaled = true
+selectMode.Font = Enum.Font.GothamBold
+selectMode.Parent = frame
+
+-- Nút nyann os v1
+local buttonV1 = Instance.new("TextButton")
+buttonV1.Size = UDim2.new(0.8, 0, 0, 45)
+buttonV1.Position = UDim2.new(0.1, 0, 0, 65)
+buttonV1.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+buttonV1.BorderSizePixel = 3
+buttonV1.BorderColor3 = Color3.fromRGB(180, 180, 180)
+buttonV1.Text = "nyann os v1"
+buttonV1.TextColor3 = Color3.fromRGB(220, 220, 220)
+buttonV1.TextScaled = true
+buttonV1.Font = Enum.Font.GothamBold
+buttonV1.Parent = frame
+
+-- Nút nyann os v2
+local buttonV2 = Instance.new("TextButton")
+buttonV2.Size = UDim2.new(0.8, 0, 0, 45)
+buttonV2.Position = UDim2.new(0.1, 0, 0, 115)
+buttonV2.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+buttonV2.BorderSizePixel = 3
+buttonV2.BorderColor3 = Color3.fromRGB(180, 180, 180)
+buttonV2.Text = "nyann os v2"
+buttonV2.TextColor3 = Color3.fromRGB(220, 220, 220)
+buttonV2.TextScaled = true
+buttonV2.Font = Enum.Font.GothamBold
+buttonV2.Parent = frame
+
+-- Khung START menu
+local startFrame = Instance.new("Frame")
+startFrame.Size = UDim2.new(0.9, 0, 0, 50)
+startFrame.Position = UDim2.new(0.05, 0, 0, 175)
+startFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+startFrame.BorderSizePixel = 2
+startFrame.BorderColor3 = Color3.fromRGB(150, 150, 150)
+startFrame.Parent = frame
+
+-- Dòng START bên trong khung
+local startText = Instance.new("TextLabel")
+startText.Size = UDim2.new(1, 0, 1, 0)
+startText.Position = UDim2.new(0, 0, 0, 0)
+startText.BackgroundTransparency = 1
+startText.Text = "START: Chọn phiên bản"
+startText.TextColor3 = Color3.fromRGB(150, 255, 150)
+startText.TextScaled = true
+startText.Font = Enum.Font.GothamBold
+startText.Parent = startFrame
+
+-- Nút START mới
+local startButton = Instance.new("TextButton")
+startButton.Size = UDim2.new(0.5, 0, 0, 40)
+startButton.Position = UDim2.new(0.25, 0, 0, 235)
+startButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+startButton.BorderSizePixel = 3
+startButton.BorderColor3 = Color3.fromRGB(150, 150, 150)
+startButton.Text = "▶ START"
+startButton.TextColor3 = Color3.fromRGB(200, 200, 200)
+startButton.TextScaled = true
+startButton.Font = Enum.Font.GothamBold
+startButton.Parent = frame
+
+-- Biến trạng thái
+local hasSelected = false
+local isMinimized = false
+local selectedVersion = ""
+local isStarted = false
+
+-- Chức năng thu nhỏ/ẩn
+minimizeBtn.MouseButton1Click:Connect(function()
+    if isMinimized then
+        frame.Size = UDim2.new(0, 450, 0, 380)
+        frame.Position = UDim2.new(0.5, -225, 0.5, -190)
+        frame.BackgroundTransparency = 0
+        for _, child in pairs(frame:GetChildren()) do
+            if child ~= minimizeBtn and child ~= closeBtn then
+                child.Visible = true
+            end
+        end
+        minimizeBtn.Text = "-"
+        isMinimized = false
+    else
+        frame.Size = UDim2.new(0, 70, 0, 35)
+        frame.Position = UDim2.new(1, -80, 0, 5)
+        frame.BackgroundTransparency = 0.3
+        for _, child in pairs(frame:GetChildren()) do
+            if child ~= minimizeBtn and child ~= closeBtn then
+                child.Visible = false
+            end
+        end
+        minimizeBtn.Text = "+"
+        isMinimized = true
+    end
+end)
+
+-- Chức năng đóng
+closeBtn.MouseButton1Click:Connect(function()
+    screenGui:Destroy()
+end)
+
+-- Tạo hiệu ứng sáng viền cho nút (màu trắng)
+local function glowButton(button, enable)
+    if enable then
+        button.BorderColor3 = Color3.fromRGB(255, 255, 255)
+        button.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+        button.TextColor3 = Color3.fromRGB(255, 255, 255)
+        for i = 3, 8, 0.5 do
+            button.BorderSizePixel = i
+            task.wait(0.05)
+        end
+    else
+        button.BorderColor3 = Color3.fromRGB(180, 180, 180)
+        button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        button.TextColor3 = Color3.fromRGB(220, 220, 220)
+        button.BorderSizePixel = 3
+    end
+end
+
+-- Tạo hiệu ứng sáng viền cho khung START (màu trắng)
+local function glowStartFrame(enable, version)
+    if enable then
+        startFrame.BorderColor3 = Color3.fromRGB(255, 255, 255)
+        startFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+        startText.TextColor3 = Color3.fromRGB(200, 255, 200)
+        startText.Text = ">> " .. version .. " ✓"
+        for i = 2, 6, 0.5 do
+            startFrame.BorderSizePixel = i
+            task.wait(0.05)
+        end
+    else
+        startFrame.BorderColor3 = Color3.fromRGB(150, 150, 150)
+        startFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+        startText.TextColor3 = Color3.fromRGB(150, 255, 150)
+        startText.Text = "START: Chọn phiên bản"
+        startFrame.BorderSizePixel = 2
+    end
+end
+
+-- Hàm load script (menu sẽ tắt ngay lập tức)
+local function loadScript(version, url)
+    if isStarted then
+        print("Đang tải " .. version .. "...")
+        return
+    end
+    
+    if not hasSelected then
+        startText.Text = ">> VUI LÒNG CHỌN PHIÊN BẢN!"
+        startText.TextColor3 = Color3.fromRGB(255, 200, 50)
+        task.wait(1.5)
+        startText.Text = "START: Chọn phiên bản"
+        startText.TextColor3 = Color3.fromRGB(150, 255, 150)
+        return
+    end
+    
+    isStarted = true
+    
+    -- Ẩn menu ngay lập tức trước khi tải script
+    screenGui:Destroy()
+    
+    -- Tải script sau khi menu đã biến mất
+    local success, err = pcall(function()
+        loadstring(game:HttpGet(url))()
+    end)
+    
+    if not success then
+        warn("Lỗi khi tải " .. version .. ": " .. tostring(err))
+        -- Có thể tạo thông báo lỗi ở đây nếu cần
+    end
+end
+
+-- Xử lý click nút v1
+buttonV1.MouseButton1Click:Connect(function()
+    if isStarted then return end
+    
+    if hasSelected and selectedVersion == "v1" then
+        glowButton(buttonV1, false)
+        glowStartFrame(false)
+        hasSelected = false
+        selectedVersion = ""
+        return
+    end
+    
+    if hasSelected then
+        glowButton(buttonV1, false)
+        glowButton(buttonV2, false)
+    end
+    
+    hasSelected = true
+    selectedVersion = "v1"
+    glowButton(buttonV1, true)
+    glowStartFrame(true, "nyann os v1")
+    startText.Text = ">> nyann os v1 ✓"
+end)
+
+-- Xử lý click nút v2
+buttonV2.MouseButton1Click:Connect(function()
+    if isStarted then return end
+    
+    if hasSelected and selectedVersion == "v2" then
+        glowButton(buttonV2, false)
+        glowStartFrame(false)
+        hasSelected = false
+        selectedVersion = ""
+        return
+    end
+    
+    if hasSelected then
+        glowButton(buttonV1, false)
+        glowButton(buttonV2, false)
+    end
+    
+    hasSelected = true
+    selectedVersion = "v2"
+    glowButton(buttonV2, true)
+    glowStartFrame(true, "nyann os v2")
+    startText.Text = ">> nyann os v2 ✓"
+end)
+
+-- Xử lý click nút START
+startButton.MouseButton1Click:Connect(function()
+    if selectedVersion == "v1" then
+        loadScript("v1", "https://raw.githubusercontent.com/nyannos/nyannos/refs/heads/main/nyannos.lua")
+    elseif selectedVersion == "v2" then
+        loadScript("v2", "https://raw.githubusercontent.com/nyannos/nyannos/refs/heads/main/nyannos2.lua")
+    else
+        startText.Text = ">> VUI LÒNG CHỌN PHIÊN BẢN!"
+        startText.TextColor3 = Color3.fromRGB(255, 200, 50)
+        task.wait(1.5)
+        startText.Text = "START: Chọn phiên bản"
+        startText.TextColor3 = Color3.fromRGB(150, 255, 150)
+    end
+end)
