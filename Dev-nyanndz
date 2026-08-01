@@ -1,0 +1,420 @@
+-- nyann OS - Menu đen trắng (Execute ở dưới + nút to hơn)
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "nyannOS_BW"
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+screenGui.ResetOnSpawn = false
+screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+local player = game.Players.LocalPlayer
+
+-- Frame chính
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 520, 0, 320)
+frame.Position = UDim2.new(0.5, -260, 0.5, -160)
+frame.BackgroundColor3 = Color3.fromRGB(8, 8, 8)
+frame.BorderSizePixel = 0
+frame.BackgroundTransparency = 0.05
+frame.Active = true
+frame.Draggable = true
+frame.Parent = screenGui
+
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 6)
+corner.Parent = frame
+
+local stroke = Instance.new("UIStroke")
+stroke.Color = Color3.fromRGB(255, 255, 255)
+stroke.Thickness = 1.5
+stroke.Transparency = 0.35
+stroke.Parent = frame
+
+-- Viền ngoài
+local outerGlow = Instance.new("Frame")
+outerGlow.Size = UDim2.new(1, 10, 1, 10)
+outerGlow.Position = UDim2.new(0, -5, 0, -5)
+outerGlow.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+outerGlow.BackgroundTransparency = 0.7
+outerGlow.BorderSizePixel = 0
+outerGlow.ZIndex = 0
+outerGlow.Parent = frame
+
+local outerCorner = Instance.new("UICorner")
+outerCorner.CornerRadius = UDim.new(0, 8)
+outerCorner.Parent = outerGlow
+
+-- Thanh tiêu đề
+local titleBar = Instance.new("Frame")
+titleBar.Size = UDim2.new(1, 0, 0, 34)
+titleBar.Position = UDim2.new(0, 0, 0, 0)
+titleBar.BackgroundColor3 = Color3.fromRGB(16, 16, 16)
+titleBar.BorderSizePixel = 0
+titleBar.Parent = frame
+
+local titleCorner = Instance.new("UICorner")
+titleCorner.CornerRadius = UDim.new(0, 6)
+titleCorner.Parent = titleBar
+
+-- Logo
+local logoLabel = Instance.new("TextLabel")
+logoLabel.Size = UDim2.new(0, 110, 1, 0)
+logoLabel.Position = UDim2.new(0, 10, 0, 0)
+logoLabel.BackgroundTransparency = 1
+logoLabel.Text = "nyann os"
+logoLabel.TextColor3 = Color3.fromRGB(240, 240, 240)
+logoLabel.TextSize = 13
+logoLabel.Font = Enum.Font.GothamBlack
+logoLabel.TextXAlignment = Enum.TextXAlignment.Left
+logoLabel.Parent = titleBar
+
+-- Tiêu đề chính
+local titleText = Instance.new("TextLabel")
+titleText.Size = UDim2.new(1, -130, 1, 0)
+titleText.Position = UDim2.new(0, 120, 0, 0)
+titleText.BackgroundTransparency = 1
+titleText.Text = "SELECT MENU  —  by real_@nyann"
+titleText.TextColor3 = Color3.fromRGB(180, 180, 180)
+titleText.TextSize = 12
+titleText.Font = Enum.Font.GothamBold
+titleText.TextXAlignment = Enum.TextXAlignment.Left
+titleText.Parent = titleBar
+
+-- Stats frame
+local statsFrame = Instance.new("Frame")
+statsFrame.Size = UDim2.new(1, -20, 0, 52)
+statsFrame.Position = UDim2.new(0, 10, 0, 42)
+statsFrame.BackgroundColor3 = Color3.fromRGB(14, 14, 14)
+statsFrame.BorderSizePixel = 0
+statsFrame.Parent = frame
+
+local statsCorner = Instance.new("UICorner")
+statsCorner.CornerRadius = UDim.new(0, 4)
+statsCorner.Parent = statsFrame
+
+local statsStroke = Instance.new("UIStroke")
+statsStroke.Color = Color3.fromRGB(70, 70, 70)
+statsStroke.Thickness = 1
+statsStroke.Transparency = 0.3
+statsStroke.Parent = statsFrame
+
+local statsContainer = Instance.new("Frame")
+statsContainer.Size = UDim2.new(1, 0, 1, 0)
+statsContainer.BackgroundTransparency = 1
+statsContainer.Parent = statsFrame
+
+local statsLayout = Instance.new("UIListLayout")
+statsLayout.FillDirection = Enum.FillDirection.Horizontal
+statsLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+statsLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+statsLayout.Padding = UDim.new(0, 40)
+statsLayout.Parent = statsContainer
+
+-- FPS
+local fpsLabel = Instance.new("TextLabel")
+fpsLabel.Size = UDim2.new(0, 140, 1, 0)
+fpsLabel.BackgroundTransparency = 1
+fpsLabel.Text = "FPS: --"
+fpsLabel.TextColor3 = Color3.fromRGB(220, 220, 220)
+fpsLabel.TextSize = 20
+fpsLabel.Font = Enum.Font.GothamBold
+fpsLabel.TextXAlignment = Enum.TextXAlignment.Right
+fpsLabel.Parent = statsContainer
+
+-- Time
+local timeLabel = Instance.new("TextLabel")
+timeLabel.Size = UDim2.new(0, 140, 1, 0)
+timeLabel.BackgroundTransparency = 1
+timeLabel.Text = "--:--:--"
+timeLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
+timeLabel.TextSize = 20
+timeLabel.Font = Enum.Font.GothamBold
+timeLabel.TextXAlignment = Enum.TextXAlignment.Left
+timeLabel.Parent = statsContainer
+
+-- FPS Counter
+local function updateFPS()
+	local lastTime = tick()
+	local frames = 0
+	task.spawn(function()
+		while true do
+			frames = frames + 1
+			if tick() - lastTime >= 1 then
+				local fps = frames
+				frames = 0
+				lastTime = tick()
+				
+				if fps >= 60 then
+					fpsLabel.TextColor3 = Color3.fromRGB(240, 240, 240)
+				elseif fps >= 30 then
+					fpsLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
+				else
+					fpsLabel.TextColor3 = Color3.fromRGB(120, 120, 120)
+				end
+				
+				fpsLabel.Text = "FPS: " .. fps
+			end
+			task.wait()
+		end
+	end)
+end
+
+local function updateTime()
+	task.spawn(function()
+		while true do
+			local now = os.date("*t")
+			timeLabel.Text = string.format("%02d:%02d:%02d", now.hour, now.min, now.sec)
+			task.wait(1)
+		end
+	end)
+end
+
+updateFPS()
+updateTime()
+
+-- ======================
+-- PHẦN NÚT (VERSION ở trên, EXECUTE ở dưới)
+-- ======================
+
+-- Container chứa 2 nút VERSION
+local versionContainer = Instance.new("Frame")
+versionContainer.Size = UDim2.new(1, -20, 0, 90)
+versionContainer.Position = UDim2.new(0, 10, 0, 110)
+versionContainer.BackgroundTransparency = 1
+versionContainer.Parent = frame
+
+local versionLayout = Instance.new("UIListLayout")
+versionLayout.FillDirection = Enum.FillDirection.Horizontal
+versionLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+versionLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+versionLayout.Padding = UDim.new(0, 18)
+versionLayout.Parent = versionContainer
+
+-- Nút V1 (to hơn)
+local buttonV1 = Instance.new("TextButton")
+buttonV1.Name = "v1"
+buttonV1.Size = UDim2.new(0, 210, 0, 78)
+buttonV1.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+buttonV1.BorderSizePixel = 0
+buttonV1.Text = "VERSION 1"
+buttonV1.TextColor3 = Color3.fromRGB(200, 200, 200)
+buttonV1.TextSize = 18
+buttonV1.Font = Enum.Font.GothamBold
+buttonV1.AutoButtonColor = false
+buttonV1.Parent = versionContainer
+
+local v1Corner = Instance.new("UICorner")
+v1Corner.CornerRadius = UDim.new(0, 5)
+v1Corner.Parent = buttonV1
+
+local v1Stroke = Instance.new("UIStroke")
+v1Stroke.Color = Color3.fromRGB(90, 90, 90)
+v1Stroke.Thickness = 1.8
+v1Stroke.Transparency = 0.2
+v1Stroke.Parent = buttonV1
+
+-- Nút V2 (to hơn)
+local buttonV2 = Instance.new("TextButton")
+buttonV2.Name = "v2"
+buttonV2.Size = UDim2.new(0, 210, 0, 78)
+buttonV2.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+buttonV2.BorderSizePixel = 0
+buttonV2.Text = "VERSION 2"
+buttonV2.TextColor3 = Color3.fromRGB(200, 200, 200)
+buttonV2.TextSize = 18
+buttonV2.Font = Enum.Font.GothamBold
+buttonV2.AutoButtonColor = false
+buttonV2.Parent = versionContainer
+
+local v2Corner = Instance.new("UICorner")
+v2Corner.CornerRadius = UDim.new(0, 5)
+v2Corner.Parent = buttonV2
+
+local v2Stroke = Instance.new("UIStroke")
+v2Stroke.Color = Color3.fromRGB(90, 90, 90)
+v2Stroke.Thickness = 1.8
+v2Stroke.Transparency = 0.2
+v2Stroke.Parent = buttonV2
+
+-- Nút EXECUTE (ở dưới, to hơn)
+local startButton = Instance.new("TextButton")
+startButton.Size = UDim2.new(0, 440, 0, 70)
+startButton.Position = UDim2.new(0.5, -220, 0, 220)
+startButton.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
+startButton.BorderSizePixel = 0
+startButton.Text = "EXECUTE"
+startButton.TextColor3 = Color3.fromRGB(240, 240, 240)
+startButton.TextSize = 20
+startButton.Font = Enum.Font.GothamBold
+startButton.AutoButtonColor = false
+startButton.Parent = frame
+
+local startCorner = Instance.new("UICorner")
+startCorner.CornerRadius = UDim.new(0, 5)
+startCorner.Parent = startButton
+
+local startStroke = Instance.new("UIStroke")
+startStroke.Color = Color3.fromRGB(160, 160, 160)
+startStroke.Thickness = 2.2
+startStroke.Transparency = 0.2
+startStroke.Parent = startButton
+
+-- Trạng thái
+local hasSelected = false
+local selectedVersion = ""
+local isStarted = false
+
+-- Hiệu ứng hover
+local function addHoverEffect(button)
+	button.MouseEnter:Connect(function()
+		if isStarted then return end
+		button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+		if button:FindFirstChildOfClass("UIStroke") then
+			button.UIStroke.Color = Color3.fromRGB(220, 220, 220)
+			button.UIStroke.Thickness = 2.8
+		end
+	end)
+	
+	button.MouseLeave:Connect(function()
+		if isStarted then return end
+		if hasSelected and selectedVersion == button.Name then
+			return
+		end
+		button.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+		if button:FindFirstChildOfClass("UIStroke") then
+			button.UIStroke.Color = Color3.fromRGB(90, 90, 90)
+			button.UIStroke.Thickness = 1.8
+		end
+	end)
+end
+
+local function glowButton(button)
+	button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+	button.TextColor3 = Color3.fromRGB(255, 255, 255)
+	if button:FindFirstChildOfClass("UIStroke") then
+		button.UIStroke.Color = Color3.fromRGB(255, 255, 255)
+		button.UIStroke.Thickness = 3.2
+	end
+end
+
+local function unglowButton(button)
+	button.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+	button.TextColor3 = Color3.fromRGB(200, 200, 200)
+	if button:FindFirstChildOfClass("UIStroke") then
+		button.UIStroke.Color = Color3.fromRGB(90, 90, 90)
+		button.UIStroke.Thickness = 1.8
+	end
+end
+
+local function glowStartButton(version)
+	startButton.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+	startButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+	startStroke.Color = Color3.fromRGB(240, 240, 240)
+	startStroke.Thickness = 3
+	if version == "v1" then
+		startButton.Text = "EXECUTE V1"
+	elseif version == "v2" then
+		startButton.Text = "EXECUTE V2"
+	end
+end
+
+local function unglowStartButton()
+	startButton.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
+	startButton.TextColor3 = Color3.fromRGB(240, 240, 240)
+	startStroke.Color = Color3.fromRGB(160, 160, 160)
+	startStroke.Thickness = 2.2
+	startButton.Text = "EXECUTE"
+end
+
+addHoverEffect(buttonV1)
+addHoverEffect(buttonV2)
+
+startButton.MouseEnter:Connect(function()
+	if isStarted then return end
+	startButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+end)
+
+startButton.MouseLeave:Connect(function()
+	if isStarted then return end
+	if hasSelected then
+		glowStartButton(selectedVersion)
+	else
+		unglowStartButton()
+	end
+end)
+
+buttonV1.MouseButton1Click:Connect(function()
+	if isStarted then return end
+	
+	if hasSelected and selectedVersion == "v1" then
+		unglowButton(buttonV1)
+		unglowStartButton()
+		hasSelected = false
+		selectedVersion = ""
+		return
+	end
+	
+	unglowButton(buttonV1)
+	unglowButton(buttonV2)
+	
+	hasSelected = true
+	selectedVersion = "v1"
+	glowButton(buttonV1)
+	glowStartButton("v1")
+end)
+
+buttonV2.MouseButton1Click:Connect(function()
+	if isStarted then return end
+	
+	if hasSelected and selectedVersion == "v2" then
+		unglowButton(buttonV2)
+		unglowStartButton()
+		hasSelected = false
+		selectedVersion = ""
+		return
+	end
+	
+	unglowButton(buttonV1)
+	unglowButton(buttonV2)
+	
+	hasSelected = true
+	selectedVersion = "v2"
+	glowButton(buttonV2)
+	glowStartButton("v2")
+end)
+
+local function loadScript(version, url)
+	if isStarted then return end
+	
+	if not hasSelected then
+		startButton.Text = "SELECT FIRST"
+		startButton.TextColor3 = Color3.fromRGB(140, 140, 140)
+		task.wait(1.1)
+		unglowStartButton()
+		return
+	end
+	
+	isStarted = true
+	
+	frame:TweenSize(UDim2.new(0, 0, 0, 0), "Out", "Quad", 0.35, true)
+	task.wait(0.35)
+	screenGui:Destroy()
+	
+	local success, err = pcall(function()
+		loadstring(game:HttpGet(url))()
+	end)
+	
+	if not success then
+		warn("Lỗi khi tải " .. version .. ": " .. tostring(err))
+	end
+end
+
+startButton.MouseButton1Click:Connect(function()
+	if selectedVersion == "v1" then
+		loadScript("v1", "https://raw.githubusercontent.com/nyannos/nyannos/refs/heads/main/nyannos.lua")
+	elseif selectedVersion == "v2" then
+		loadScript("v2", "https://raw.githubusercontent.com/nyannos/nyannos/refs/heads/main/nyannos2.lua")
+	end
+end)
+
+-- Mở menu
+frame.Size = UDim2.new(0, 0, 0, 0)
+frame:TweenSize(UDim2.new(0, 520, 0, 320), "Out", "Back", 0.5, true)
