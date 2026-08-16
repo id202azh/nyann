@@ -2934,7 +2934,7 @@ local function performClick()
     getgenv().AutoClickShootSettings.LastClickTime = currentTime
 end
 
-local redzlib = loadstring(game:HttpGet("https://raw.githubusercontent.com/id202azh/nyann/refs/heads/main/raw_black_white_final.txt"))()
+local redzlib = loadstring(game:HttpGet("https://raw.githubusercontent.com/id202azh/nyann/refs/heads/main/FarmHub_BlackWhite.lua"))()
 local Window = redzlib:MakeWindow({
     Title = "nyann os",
     SubTitle = "by real_@nyann",
@@ -2963,7 +2963,7 @@ local v1 = Window:MakeTab({
 })
 local v2 = Window:MakeTab({
     Title = "Farming",
-    Icon = "leaf"
+    Icon = "rbxassetid://10709769508"
 })
 local v3 = Window:MakeTab({
     Title = "Quests & Other",
